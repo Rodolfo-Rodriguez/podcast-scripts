@@ -24,8 +24,6 @@ if not(pod_nick in pod_dirs):
 pod_dir = pod_dirs[pod_nick]
 pod_full_dir = global_values['base_pod_path'] + '/' + pod_dir
 
-pods_to_filter = global_values['pods_to_filter']
-
 feed_url = pod_urls[pod_nick]
 feed_file = pod_full_dir + '/' + global_values['local_feed_file']
 down_ep_file = pod_full_dir + '/' + global_values['down_ep_file']
@@ -49,8 +47,6 @@ if os.path.isfile(feed_file):
 print "===> Downloading " + feed_url
 wget.download(feed_url, feed_file)
 
-down_episodes = [line.rstrip('\n') for line in open(down_ep_file)]
-
 tree = ET.parse(feed_file)
 root = tree.getroot()
 
@@ -60,31 +56,20 @@ all_items = channel.findall('item')
 pod_items = []
 
 for item in all_items:
-  if pod_nick in pods_to_filter:
+  if pod_nick in ['dearriba','justicia','todo']:
     title = item.find('title').text
     if (pod_title in title):
       pod_items.append(item)
   else:
     pod_items.append(item)
 
-####################################################################################
-# Check Downloaded Episodes
-####################################################################################
-
-down_ep_f = open(down_ep_file,'a')
-
 print '\n'
-print '===================================================================================================='
-print 'New Episodes'
-print '----------------------------------------------------------------------------------------------------'
+print '========================================================================================'
+print 'Episodes'
+print '========================================================================================'
 
-for item in pod_items:
-  item_url = item.find('enclosure').get('url')
-  if not(item_url in down_episodes):
-    print item_url
-
-down_ep_f.close()
-
-print '===================================================================================================='
+for pod_item in pod_items:
+  title = pod_item.find('title').text
+  print title
 
 os.remove(feed_file)

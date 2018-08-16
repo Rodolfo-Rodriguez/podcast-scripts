@@ -26,6 +26,8 @@ pod_file_pattern = pod_file_patterns[pod_nick]
 
 pod_full_dir = global_values['base_pod_path'] + '/' + pod_dir
 
+pods_to_filter = global_values['pods_to_filter']
+
 feed_url = pod_urls[pod_nick]
 feed_file = pod_full_dir + '/' + global_values['local_feed_file']
 down_ep_file = pod_full_dir + '/' + global_values['down_ep_file']
@@ -61,10 +63,9 @@ all_items = channel.findall('item')
 pod_items = []
 
 for item in all_items:
-  if pod_nick in ['dearriba','justicia','todo']:
+  if pod_nick in pods_to_filter:
     title = item.find('title').text
-    guid = item.find('guid').text
-    if (pod_title in title) and ('programaentero' in guid):
+    if (pod_title in title):
       pod_items.append(item)
   else:
     pod_items.append(item)
@@ -80,8 +81,8 @@ for item in pod_items:
   if not(item_url in down_episodes):
     ep_file = item_url.split('/')[-1]
     
-    if pod_nick in ['dearriba','justicia','todo']:
-      pod_ep_name = pod_full_dir + '/' + pod_nick + '-' + ep_file.split('programaentero')[0] + '.mp3'
+    if pod_nick in pods_to_filter:
+      pod_ep_name = pod_full_dir + '/' + pod_nick + '-' + ep_file
     else:
       pod_ep_name = pod_full_dir + '/' + ep_file
 
